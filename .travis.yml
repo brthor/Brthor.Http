@@ -2,8 +2,8 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 dist: trusty
-services:
-  - redis-server
 script:
  - dotnet restore
  - dotnet build
+after_success:
+ - bash publish.sh
