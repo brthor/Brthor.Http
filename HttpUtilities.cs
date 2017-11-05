@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace thor
+namespace Brthor.Http
 {
     public static class HttpUtilities
     {

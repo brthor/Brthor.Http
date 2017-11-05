@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace thor
+namespace Brthor.Http
 {
     public static class Http
     {

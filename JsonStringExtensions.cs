@@ -1,11 +1,8 @@
 ﻿using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace thor
+namespace Brthor.Http
 {
     public static class JsonStringExtensions
     {

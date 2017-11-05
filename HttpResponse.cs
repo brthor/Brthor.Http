@@ -6,8 +6,9 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Xml;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
-namespace thor
+namespace Brthor.Http
 {
     public class HttpResponse
     {
@@ -25,21 +26,40 @@ namespace thor
         public T Json<T>() where T : class, new()
         {
             var responseContentStr = GetResponseContentString();
+            ResponseContent.Position = 0;
+            
             if (string.IsNullOrWhiteSpace(responseContentStr))
             {
                 return new T();
             }
+
+            var isDataContract = 
+                typeof(T).GetTypeInfo().GetCustomAttribute<DataContractAttribute>() != null;
             
-            ResponseContent.Position = 0;
-            var deSerializer = new DataContractJsonSerializer(typeof(T),
-                new DataContractJsonSerializerSettings {UseSimpleDictionaryFormat = true});
-            var responseModel = (T) deSerializer.ReadObject(ResponseContent);
+            
+            if (isDataContract)
+            {
+                var deSerializer = new DataContractJsonSerializer(typeof(T),
+                    new DataContractJsonSerializerSettings {UseSimpleDictionaryFormat = true});
+                var responseModel = (T) deSerializer.ReadObject(ResponseContent);
 
-            var httpResponseProperty = responseModel.GetType().GetRuntimeProperties()
-                .FirstOrDefault(p => p.Name.Equals(JsonHttpResponseMessagePropertyName));
-            httpResponseProperty?.SetValue(responseModel, HttpResponseMessage);
+                var httpResponseProperty = responseModel.GetType().GetRuntimeProperties()
+                    .FirstOrDefault(p => p.Name.Equals(JsonHttpResponseMessagePropertyName));
+                httpResponseProperty?.SetValue(responseModel, HttpResponseMessage);
 
-            return responseModel;
+                return responseModel;
+            }
+            else
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+
+                var responseModel = JsonConvert.DeserializeObject<T>(responseContentStr, settings);
+
+                return responseModel;
+            }
         }
         
         public T Xml<T>() where T : class, new()
