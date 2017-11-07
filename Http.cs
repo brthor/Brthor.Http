@@ -6,11 +6,18 @@ namespace Brthor.Http
 {
     public static class Http
     {
+        private static HttpClient HttpClient { get; set; }
+        
+        public static void UseHttpClient(HttpClient httpClient)
+        {
+            HttpClient = httpClient;
+        }
+        
         public static async Task<HttpResponse> Get(string baseUrl, 
             Dictionary<string, string> queryParameters=null,
             Dictionary<string, string> customHeaders=null)
         {
-            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders);
+            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders, baseClient: HttpClient);
             var url = HttpUtilities.ConstructUrlWithQueryString(baseUrl, queryParameters);
             
             var response = await client.GetAsync(url);
@@ -48,7 +55,7 @@ namespace Brthor.Http
             Dictionary<string, string> queryParameters=null,
             Dictionary<string, string> customHeaders=null)
         {
-            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders);
+            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders, baseClient: HttpClient);
             var url = HttpUtilities.ConstructUrlWithQueryString(baseUrl, queryParameters);
             
             var response = await client.PutAsync(url, content);
@@ -90,7 +97,7 @@ namespace Brthor.Http
             Dictionary<string, string> queryParameters=null,
             Dictionary<string, string> customHeaders=null)
         {
-            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders);
+            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders, baseClient: HttpClient);
             var url = HttpUtilities.ConstructUrlWithQueryString(baseUrl, queryParameters);
             
             var response = await client.PostAsync(url, content);
@@ -103,7 +110,7 @@ namespace Brthor.Http
             Dictionary<string, string> queryParameters=null,
             Dictionary<string, string> customHeaders=null)
         {
-            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders);
+            var client = HttpUtilities.ConstructHttpClientWithHeaders(customHeaders, baseClient: HttpClient);
             var url = HttpUtilities.ConstructUrlWithQueryString(baseUrl, queryParameters);
             
             var response = await client.DeleteAsync(url);

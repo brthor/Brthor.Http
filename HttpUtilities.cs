@@ -16,9 +16,11 @@ namespace Brthor.Http
 {
     public static class HttpUtilities
     {
-        public static HttpClient ConstructHttpClientWithHeaders(Dictionary<string, string> customHeaders)
+        public static HttpClient ConstructHttpClientWithHeaders(Dictionary<string, string> customHeaders, HttpClient baseClient=null)
         {
-            var client = new HttpClient(new LoggingHandler(new HttpClientHandler()));
+            var loggingHandler = new LoggingHandler(new HttpClientHandler());
+            var client = baseClient ?? new HttpClient(loggingHandler);
+            client.DefaultRequestHeaders.Clear();
 
             if (customHeaders == null) 
                 return client;
