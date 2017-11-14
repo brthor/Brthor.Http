@@ -20,7 +20,6 @@ namespace Brthor.Http
         {
             var loggingHandler = new LoggingHandler(new HttpClientHandler());
             var client = baseClient ?? new HttpClient(loggingHandler);
-            client.DefaultRequestHeaders.Clear();
 
             if (customHeaders == null) 
                 return client;
