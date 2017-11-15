@@ -26,6 +26,8 @@ namespace Brthor.Http
             
             foreach (var kvp in customHeaders)
             {
+                if (client.DefaultRequestHeaders.Contains(kvp.Key)) client.DefaultRequestHeaders.Remove(kvp.Key);
+                
                 client.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
             }
 
