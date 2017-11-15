@@ -32,7 +32,7 @@ namespace Brthor.Http
             Dictionary<string, string> customHeaders=null,
             Dictionary<string, string> customContentHeaders=null) where T : class
         {
-            var content = HttpUtilities.SerializeObjectToJsonStreamContent(jsonContent);
+            var content = HttpUtilities.SerializeObjectToJsonStringContent(jsonContent);
             content.AddHeadersFromDictionary(customContentHeaders);
 
             return await Put(baseUrl, content, queryParameters: queryParameters, customHeaders: customHeaders);
@@ -70,7 +70,7 @@ namespace Brthor.Http
             Dictionary<string, string> customHeaders=null,
             Dictionary<string, string> customContentHeaders=null) where T : class
         {
-            var content = HttpUtilities.SerializeObjectToJsonStreamContent(jsonContent);
+            var content = HttpUtilities.SerializeObjectToJsonStringContent(jsonContent);
             content.AddHeadersFromDictionary(customContentHeaders);
 
             return await Post(baseUrl, content, 

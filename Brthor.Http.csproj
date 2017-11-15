@@ -14,4 +14,13 @@
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Brthor.Http.Tests\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Brthor.Http.Tests\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Brthor.Http.Tests\**" />
+  </ItemGroup>
 </Project>

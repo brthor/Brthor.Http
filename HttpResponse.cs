@@ -16,6 +16,8 @@ namespace Brthor.Http
         
         public HttpResponseMessage HttpResponseMessage { get; set; }
         public Stream ResponseContent { get; set; }
+
+        public string Text => GetResponseContentString();
         
         public HttpResponse(HttpResponseMessage httpResponseMessage, Stream responseContent)
         {
@@ -35,7 +37,6 @@ namespace Brthor.Http
 
             var isDataContract = 
                 typeof(T).GetTypeInfo().GetCustomAttribute<DataContractAttribute>() != null;
-            
             
             if (isDataContract)
             {

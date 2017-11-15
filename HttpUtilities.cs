@@ -5,12 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace Brthor.Http
 {
@@ -50,35 +52,45 @@ namespace Brthor.Http
             return "?" + string.Join("&", parameters.Select(kvp => kvp.Key + "=" + kvp.Value));
         }
 
-        public static StreamContent SerializeObjectToJsonStreamContent<T>(T jsonContent)
+        public static StringContent SerializeObjectToJsonStringContent<T>(T jsonContent)
         {
-            var serializationStream = new MemoryStream();
-            var serializer = new DataContractJsonSerializer(typeof(T));
-            serializer.WriteObject(serializationStream, jsonContent);
+            var jsonString = SerializeObjectToJsonString(jsonContent);
 
-            serializationStream.Position = 0;
-            var sr = new StreamReader(serializationStream);
-            Console.WriteLine(sr.ReadToEnd());
-
-            serializationStream.Position = 0;
-            var content = new StreamContent(serializationStream);
+            var content = new StringContent(jsonString);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            content.Headers.ContentLength = serializationStream.Length;
+            content.Headers.ContentLength = jsonString.Length;
 
             return content;
         }
         
         public static string SerializeObjectToJsonString<T>(T jsonContent)
         {
-            var serializationStream = new MemoryStream();
-            var serializer = new DataContractJsonSerializer(typeof(T));
-            serializer.WriteObject(serializationStream, jsonContent);
+            var isDataContract = 
+                typeof(T).GetTypeInfo().GetCustomAttribute<DataContractAttribute>() != null;
 
-            serializationStream.Position = 0;
-            var sr = new StreamReader(serializationStream);
-            var jsonString = sr.ReadToEnd();
+            if (isDataContract)
+            {
+                var serializationStream = new MemoryStream();
+                var serializer = new DataContractJsonSerializer(typeof(T));
+                serializer.WriteObject(serializationStream, jsonContent);
 
-            return jsonString;
+                serializationStream.Position = 0;
+                var sr = new StreamReader(serializationStream);
+                var jsonString = sr.ReadToEnd();
+
+                return jsonString;
+            }
+            else
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+
+                var jsonString = JsonConvert.SerializeObject(jsonContent, settings);
+
+                return jsonString;
+            }
         }
 
         public static HttpContent SerializeObjectToXmlStringContent<T>(T xmlContent)
@@ -239,8 +251,6 @@ namespace Brthor.Http
                 {
                     var contentBytes = await request.Content.ReadAsByteArrayAsync();
                     Console.WriteLine(Encoding.ASCII.GetString(contentBytes));
-                    
-                    File.WriteAllBytes("/Users/kukri/Desktop/log.txt", contentBytes);
                 }
                 Console.WriteLine();
 
