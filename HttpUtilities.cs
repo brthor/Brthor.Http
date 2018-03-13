@@ -238,33 +238,38 @@ namespace Brthor.Http
         
         public class LoggingHandler : DelegatingHandler
         {
+            private bool _enabled;
             public LoggingHandler(HttpMessageHandler innerHandler)
                 : base(innerHandler)
             {
+                _enabled = Environment.GetEnvironmentVariable("BRTHOR_HTTP_VERBOSE") != null;
             }
 
             protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
-                Console.WriteLine("Request:");
-                Console.WriteLine(request.ToString());
-                if (request.Content != null)
+                if (_enabled)
                 {
-                    var contentBytes = await request.Content.ReadAsByteArrayAsync();
-                    Console.WriteLine(Encoding.ASCII.GetString(contentBytes));
+                    Console.WriteLine("Request:");
+                    Console.WriteLine(request.ToString());
+                    if (request.Content != null)
+                    {
+                        var contentBytes = await request.Content.ReadAsByteArrayAsync();
+                        Console.WriteLine(Encoding.ASCII.GetString(contentBytes));
+                    }
+                    Console.WriteLine();
+
+                    HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+                    Console.WriteLine("Response:");
+                    Console.WriteLine(response.ToString());
+                    if (response.Content != null)
+                    {
+                        Console.WriteLine(await response.Content.ReadAsStringAsync());
+                    }
+                    Console.WriteLine();
+
+                    return response;
                 }
-                Console.WriteLine();
-
-                HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-
-                Console.WriteLine("Response:");
-                Console.WriteLine(response.ToString());
-                if (response.Content != null)
-                {
-                    Console.WriteLine(await response.Content.ReadAsStringAsync());
-                }
-                Console.WriteLine();
-
-                return response;
             }
             
             
