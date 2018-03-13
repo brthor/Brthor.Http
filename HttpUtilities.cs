@@ -270,6 +270,8 @@ namespace Brthor.Http
 
                     return response;
                 }
+
+                return await base.SendAsync(request, cancellationToken);
             }
             
             
