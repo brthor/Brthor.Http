@@ -29,6 +29,24 @@ namespace Brthor.Http.Tests
 
             obj.Headers["Host"].Should().Be("httpbin.org");
         }
+
+        [Fact]
+        public void ItThrowsWhenGettingSiteWithSelfSignedCertificate()
+        {
+            // https://self-signed.badssl.com
+            Action badAction = () =>
+            {
+                Http.Get("https://self-signed.badssl.com").GetAwaiter().GetResult(); 
+            };
+
+            badAction.ShouldThrow<HttpRequestException>();
+        }
+        
+        [Fact]
+        public async Task ItDoesNotThrowWhenGettingSiteWithSelfSignedCertificateAndVerifySslIsFalse()
+        {
+            await Http.Get("https://self-signed.badssl.com", verifySsl: false);
+        }
         
         [Fact]
         public async Task ItCanSendCustomHeadersAndRequestDataWithAllRequestTypes()
