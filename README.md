@@ -9,7 +9,7 @@
 ### Basic
 ```c#
 
-var response = Http.Get("www.google.com");
+var response = await Http.Get("www.google.com");
 Console.WriteLine(response.Text);
 
 ```
@@ -53,6 +53,6 @@ foreach (var response in responses)
 Note: Use this for testing purposes only.
 
 ```c#
-var response = Http.Get("https://self-signed.badssl.com", verifySsl: false);
+var response = await Http.Get("https://self-signed.badssl.com", verifySsl: false);
 Console.WriteLine(response.Text);
 ```
