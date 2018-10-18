@@ -1,4 +1,4 @@
-# Brthor.Http: Easier Http Request API for .NET Standard
+# Brthor.Http: Easier Http Request API for .NET Core
 
 [![Build Status](https://travis-ci.org/brthor/Brthor.Http.svg?branch=master)](https://travis-ci.org/brthor/Brthor.Http)
 [![Nuget Version Number](https://img.shields.io/nuget/v/Brthor.Http.svg)](https://www.nuget.org/packages/Brthor.Http)
@@ -15,7 +15,7 @@ Console.WriteLine(response.Text);
 ```
 
 ### Send and receive json, send custom headers, and set query parameters.
-```
+```c#
 public class HttpBinJsonResponse
 {
     public string Url;
@@ -52,7 +52,7 @@ foreach (var response in responses)
 
 Note: Use this for testing purposes only.
 
-```
+```c#
 var response = Http.Get("https://self-signed.badssl.com", verifySsl: false);
 Console.WriteLine(response.Text);
 ```
