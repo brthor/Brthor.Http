@@ -18,9 +18,21 @@ namespace Brthor.Http
 {
     public static class HttpUtilities
     {
-        public static HttpClient ConstructHttpClientWithHeaders(Dictionary<string, string> customHeaders, HttpClient baseClient=null)
+        public static HttpClient ConstructHttpClientWithHeaders(
+            Dictionary<string, string> customHeaders, 
+            long? contentLength=null,
+            HttpClient baseClient=null,
+            bool verifySsl=true)
         {
-            var loggingHandler = new LoggingHandler(new HttpClientHandler());
+            var innerHandler = new HttpClientHandler();
+
+            if (! verifySsl)
+            {
+                innerHandler.ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            }
+            
+            var loggingHandler = new LoggingHandler(innerHandler);
             var client = baseClient ?? new HttpClient(loggingHandler);
 
             if (customHeaders == null) 
@@ -238,7 +250,8 @@ namespace Brthor.Http
         
         public class LoggingHandler : DelegatingHandler
         {
-            private bool _enabled;
+            private readonly bool _enabled;
+            
             public LoggingHandler(HttpMessageHandler innerHandler)
                 : base(innerHandler)
             {
