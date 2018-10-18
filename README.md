@@ -6,7 +6,7 @@
 ## Examples
 
 
-** Basic **
+### Basic
 ```c#
 
 var response = Http.Get("www.google.com");
@@ -14,7 +14,7 @@ Console.WriteLine(response.Text);
 
 ```
 
-** Send and receive json, send custom headers, and set query parameters. **
+### Send and receive json, send custom headers, and set query parameters.
 ```
 public class HttpBinJsonResponse
 {
@@ -46,4 +46,13 @@ foreach (var response in responses)
 {
     var responseJson = response.Json<HttpBinResponse>();
 }
+```
+
+### Ignore SSL Certificate Errors
+
+Note: Use this for testing purposes only.
+
+```
+var response = Http.Get("https://self-signed.badssl.com", verifySsl: false);
+Console.WriteLine(response.Text);
 ```
